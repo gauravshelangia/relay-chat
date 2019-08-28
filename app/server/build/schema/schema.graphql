@@ -1,0 +1,176 @@
+input AddMessageInput {
+  clientMutationId: String
+  userId: String
+  username: String
+  text: String!
+}
+
+type AddMessagePayload {
+  clientMutationId: String
+  messageEdge: MessageEdge
+  viewer: User
+}
+
+input DeleteMessageInput {
+  clientMutationId: String
+  id: Int!
+}
+
+type DeleteMessagePayload {
+  clientMutationId: String
+  message: Message
+  viewer: User
+}
+
+input LoginUserInput {
+  clientMutationId: String
+  name: String!
+}
+
+type LoginUserPayload {
+  clientMutationId: String
+  userEdge: UserEdge
+  viewer: User
+}
+
+input LoginUserSubscriptionInput {
+  clientSubscriptionId: String
+}
+
+type LoginUserSubscriptionPayload {
+  userEdge: UserEdge
+  viewer: User
+  clientSubscriptionId: String
+}
+
+input LogoutUserInput {
+  clientMutationId: String
+  id: ID!
+}
+
+type LogoutUserPayload {
+  clientMutationId: String
+  user: User
+  viewer: User
+}
+
+input LogoutUserSubscriptionInput {
+  clientSubscriptionId: String
+}
+
+type LogoutUserSubscriptionPayload {
+  user: User
+  viewer: User
+  clientSubscriptionId: String
+}
+
+type Message {
+  # The ID of an object
+  id: ID!
+  userId: String
+  username: String
+  text: String
+  createdAt: String
+  updatedAt: String
+}
+
+# A connection to a list of items.
+type MessageConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [MessageEdge]
+}
+
+# An edge in a connection.
+type MessageEdge {
+  # The item at the end of the edge
+  node: Message
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+type Mutation {
+  loginUser(input: LoginUserInput!): LoginUserPayload
+  logoutUser(input: LogoutUserInput!): LogoutUserPayload
+  addMessage(input: AddMessageInput!): AddMessagePayload
+  deleteMessage(input: DeleteMessageInput!): DeleteMessagePayload
+}
+
+input NewMessageSubscriptionInput {
+  clientSubscriptionId: String
+}
+
+type NewMessageSubscriptionPayload {
+  messageEdge: MessageEdge
+  viewer: User
+  clientSubscriptionId: String
+}
+
+# An object with an ID
+interface Node {
+  # The id of the object.
+  id: ID!
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+type Query {
+  viewer: User
+
+  # Fetches an object given its ID
+  node(
+    # The ID of an object
+    id: ID!
+  ): Node
+}
+
+type Subscription {
+  loginUser(input: LoginUserSubscriptionInput!): LoginUserSubscriptionPayload
+  logoutUser(input: LogoutUserSubscriptionInput!): LogoutUserSubscriptionPayload
+  newMessage(input: NewMessageSubscriptionInput!): NewMessageSubscriptionPayload
+}
+
+# A Chat User
+type User {
+  # The ID of an object
+  id: ID!
+  name: String
+  createdAt: String
+  updatedAt: String
+  messages(after: String, first: Int, before: String, last: Int): MessageConnection
+  users(after: String, first: Int, before: String, last: Int): UserConnection
+}
+
+# A connection to a list of items.
+type UserConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [UserEdge]
+}
+
+# An edge in a connection.
+type UserEdge {
+  # The item at the end of the edge
+  node: User
+
+  # A cursor for use in pagination
+  cursor: String!
+}
